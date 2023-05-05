@@ -4,7 +4,7 @@ NAME	= philo
 ### Compilation ###
 CC		= gcc
 RM		= rm -f
-C_FLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=address -g
 
 ### Source Files ###
 SRCS	= philo.c check_args.c allocate_args.c init_args.c\
@@ -13,14 +13,11 @@ SRCS	= philo.c check_args.c allocate_args.c init_args.c\
 ### Object Files ###
 OBJS	= $(SRCS:.c=.o)
 
-### Rule ###
-%.o:%.c
-	$(CC) $(C_FLAGS) -c $< -o $@
-
+### Compilation Rules ###
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(C_FLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 clean:
 	$(RM) $(OBJS) $(BONUS_OBJS)
