@@ -56,7 +56,7 @@ void	prterr(int errnum)
 		printf("Invalid number of times each philosopher must eat.\n");
 	else if (errnum == 6)
 		printf("The number of philosophers must have at least 1.\n");
-	exit(0);
+	exit(1);
 }
 
 void	free_exit(t_args *args, int code)
