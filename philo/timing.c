@@ -48,3 +48,10 @@ int	print_doublemesage(t_philo *pl, char *str)
 	pthread_mutex_unlock(pl->lock);
 	return (0);
 }
+
+int	place2fork(pthread_mutex_t *fork1, pthread_mutex_t *fork2)
+{
+	pthread_mutex_unlock(fork1);
+	pthread_mutex_unlock(fork2);
+	return (0);
+}

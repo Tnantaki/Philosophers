@@ -53,7 +53,7 @@ int	philo_take_fork(t_philo *pl)
 		{
 			pthread_mutex_lock(pl->next_fork);
 			if (!print_doublemesage(pl, TAKE_FORK))
-				return (0);
+				return (place2fork(pl->my_fork, pl->next_fork));
 			pl->pms[pl->my_id] = 0;
 			return (1);
 		}
@@ -68,21 +68,16 @@ int	philo_take_fork(t_philo *pl)
 int	philo_eating(t_philo *pl)
 {
 	if (!print_mesage(pl, EATING))
-		return (0);
+		return (place2fork(pl->my_fork, pl->next_fork));
 	pl->t_starve = pl->t_cur + pl->time->t_die;
 	while (get_elapse_time() - pl->t_cur < pl->time->t_eat)
 	{
 		if (!check_starvation(pl))
-		{
-			pthread_mutex_unlock(pl->my_fork);
-			pthread_mutex_unlock(pl->next_fork);
-			return (0);
-		}
+			return (place2fork(pl->my_fork, pl->next_fork));
 		usleep(100);
 	}
 	pl->pms[pl->next_id] = 1;
-	pthread_mutex_unlock(pl->my_fork);
-	pthread_mutex_unlock(pl->next_fork);
+	place2fork(pl->my_fork, pl->next_fork);
 	if (pl->time->max_meal)
 	{
 		pl->meal += 1;

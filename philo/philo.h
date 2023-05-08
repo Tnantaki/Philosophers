@@ -98,6 +98,7 @@ int				philo_sleeping(t_philo *pl);
 long int		get_elapse_time(void);
 int				print_mesage(t_philo *pl, char *str);
 int				print_doublemesage(t_philo *pl, char *str);
+int				place2fork(pthread_mutex_t *fork1, pthread_mutex_t *fork2);
 //utils
 int				ft_atoi(const char *str);
 void			prterr(int errnum);
