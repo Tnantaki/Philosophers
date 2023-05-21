@@ -41,7 +41,7 @@ long int	get_elapse_time(void)
 	return (time.tv_sec * 1000000 + time.tv_usec);
 }
 
-int	print_mesage(t_philo *pl, char *str)
+int	print_message(t_philo *pl, char *str)
 {
 	pthread_mutex_lock(pl->lock);
 	if (*(pl->live) == 1)
@@ -78,10 +78,9 @@ void	prterr(int errnum)
 		printf("Invalid number of times each philosopher must eat.\n");
 	else if (errnum == 6)
 		printf("The number of philosophers must have at least 1.\n");
-	exit(1);
 }
 
-void	free_exit(t_args *args, int code)
+void	free_args(t_args *args, int code)
 {
 	if (args->pl)
 		free(args->pl);
@@ -94,7 +93,7 @@ void	free_exit(t_args *args, int code)
 	if (args->fork)
 		free(args->fork);
 	if (code == 0)
-		exit(0);
+		return ;
 	else if (code == 1)
 		printf(ERR, "Error to malloc");
 	else if (code == 2)
@@ -103,5 +102,4 @@ void	free_exit(t_args *args, int code)
 		printf(ERR, "Fail to create new thread");
 	else if (code == 4)
 		printf(ERR, "Fail to join thread");
-	exit(1);
 }

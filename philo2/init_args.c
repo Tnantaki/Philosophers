@@ -54,7 +54,7 @@ void	init_philo(t_args *args)
 	}
 }
 
-void	init_args(t_args *args)
+int	init_args(t_args *args)
 {
 	args->pl = allocate_philo(args->philo_nb);
 	args->th = allocate_thread(args->philo_nb);
@@ -62,10 +62,11 @@ void	init_args(t_args *args)
 	args->lock = allocate_mutex(1);
 	args->fork = allocate_fork(args->philo_nb);
 	if (!args->pl || !args->th || !args->mutex || !args->lock || !args->fork)
-		free_exit(args, 1);
+		return (free_args(args, 1), 0);
 	if (init_mutex(args->mutex, args->philo_nb) != 1)
-		free_exit(args, 2);
+		return (free_args(args, 2), 0);
 	if (init_mutex(args->lock, 1) != 1)
-		free_exit(args, 2);
+		return (free_args(args, 2), 0);
 	init_philo(args);
+	return (1);
 }

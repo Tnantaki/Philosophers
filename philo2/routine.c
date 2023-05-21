@@ -60,7 +60,7 @@ int	philo_take_fork(t_philo *pl, t_mutex *mutex, int *fork, int mode)
 		if (*fork == mode)
 		{
 			pthread_mutex_unlock(mutex);
-			if (!print_mesage(pl, TAKE_FORK))
+			if (!print_message(pl, TAKE_FORK))
 				return (0);
 			return (1);
 		}
@@ -72,7 +72,7 @@ int	philo_take_fork(t_philo *pl, t_mutex *mutex, int *fork, int mode)
 
 int	philo_eating(t_philo *pl)
 {
-	if (!print_mesage(pl, EATING))
+	if (!print_message(pl, EATING))
 		return (0);
 	pl->t_starve = pl->t_cur + pl->time->t_die;
 	while (get_elapse_time() - pl->t_cur < pl->time->t_eat)
@@ -98,7 +98,7 @@ int	philo_eating(t_philo *pl)
 
 int	philo_sleeping(t_philo *pl)
 {
-	if (!print_mesage(pl, SLEEPING))
+	if (!print_message(pl, SLEEPING))
 		return (0);
 	while (get_elapse_time() - pl->t_cur < pl->time->t_slp)
 	{
@@ -106,7 +106,7 @@ int	philo_sleeping(t_philo *pl)
 			return (0);
 		usleep(50);
 	}
-	if (!print_mesage(pl, THINGKING))
+	if (!print_message(pl, THINGKING))
 		return (0);
 	return (1);
 }

@@ -16,11 +16,17 @@ int	main(int ac, char **av)
 {
 	t_args	args;
 
-	check_args(ac, av);
-	get_input(&args, ac, av);
-	init_args(&args);
-	create_thread(&args);
-	join_thread(&args);
+	if (!check_args(ac, av))
+		return (1);
+	if (!get_input(&args, ac, av))
+		return (1);
+	if (!init_args(&args))
+		return (1);
+	if (!create_thread(&args))
+		return (1);
+	if (!join_thread(&args))
+		return (1);
 	destroy_mutex(&args);
-	free_exit(&args, 0);
+	free_args(&args, 0);
+	return (0);
 }

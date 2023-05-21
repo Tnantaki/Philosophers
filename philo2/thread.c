@@ -32,7 +32,7 @@ void	*one_philo(void *args)
 	return (NULL);
 }
 
-void	create_thread(t_args *args)
+int	create_thread(t_args *args)
 {
 	int	i;
 
@@ -41,20 +41,21 @@ void	create_thread(t_args *args)
 	if (args->philo_nb == 1)
 	{
 		if (pthread_create(&args->th[i], NULL, &one_philo, &args->pl[i]) != 0)
-			free_exit(args, 3);
-		return ;
+			return (destroy_mutex(args), free_args(args, 3), 0);
+		return (1);
 	}
 	while (i < args->philo_nb)
 	{
 		if (pthread_create(&args->th[i], NULL, &routine, &args->pl[i]) != 0)
-			free_exit(args, 3);
+			return (destroy_mutex(args), free_args(args, 3), 0);
 		i += 2;
 		if (i >= args->philo_nb && i % 2 == 0)
 			i = 1;
 	}
+	return (1);
 }
 
-void	join_thread(t_args *args)
+int	join_thread(t_args *args)
 {
 	int	i;
 
@@ -62,13 +63,10 @@ void	join_thread(t_args *args)
 	while (i < args->philo_nb)
 	{
 		if (pthread_join(args->th[i], NULL) != 0)
-		{
-			i += 0;
-			destroy_mutex(args);
-			free_exit(args, 4);
-		}
+			return (destroy_mutex(args), free_args(args, 4), 0);
 		i++;
 	}
+	return (1);
 }
 
 void	destroy_mutex(t_args *args)

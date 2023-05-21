@@ -76,19 +76,18 @@ typedef struct s_args
 }	t_args;
 
 //check_arguments
-void		check_args(int ac, char **av);
-void		get_input(t_args *args, int ac, char **av);
+int			check_args(int ac, char **av);
+int			get_input(t_args *args, int ac, char **av);
 //allocate_argments
 t_philo		*allocate_philo(int size);
 pthread_t	*allocate_thread(int size);
 t_mutex		*allocate_mutex(int size);
 int			*allocate_fork(int size);
-// int			*allocate_permission(int size);
 //init argument
-void		init_args(t_args *args);
+int			init_args(t_args *args);
 //thread
-void		create_thread(t_args *args);
-void		join_thread(t_args *args);
+int			create_thread(t_args *args);
+int			join_thread(t_args *args);
 void		destroy_mutex(t_args *args);
 //routine
 void		*routine(void *args);
@@ -99,8 +98,8 @@ int			philo_sleeping(t_philo *pl);
 //utils
 int			ft_atoi(const char *str);
 long int	get_elapse_time(void);
-int			print_mesage(t_philo *pl, char *str);
+int			print_message(t_philo *pl, char *str);
 void		prterr(int errnum);
-void		free_exit(t_args *args, int code);
+void		free_args(t_args *args, int code);
 
 #endif
