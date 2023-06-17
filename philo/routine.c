@@ -12,16 +12,24 @@
 
 #include "philo.h"
 
-int	check_philo_live(t_philo *pl)
+void	*routine(void *args)
 {
-	pthread_mutex_lock(pl->lock);
-	if (*(pl->live) == 0)
+	t_philo	*pl;
+
+	pl = (t_philo *)args;
+	pl->t_starve = pl->time->start + pl->time->t_die;
+	while (check_starvation(pl))
 	{
-		pthread_mutex_unlock(pl->lock);
-		return (0);
+		if (!philo_take_fork(pl, pl->mutex1, pl->fork1, 1))
+			break ;
+		if (!philo_take_fork(pl, pl->mutex2, pl->fork2, 0))
+			break ;
+		if (!philo_eating(pl))
+			break ;
+		if (!philo_sleeping(pl))
+			break ;
 	}
-	pthread_mutex_unlock(pl->lock);
-	return (1);
+	return (NULL);
 }
 
 int	check_starvation(t_philo *pl)
@@ -44,40 +52,41 @@ int	check_starvation(t_philo *pl)
 	return (1);
 }
 
-int	philo_take_fork(t_philo *pl)
+int	philo_take_fork(t_philo *pl, t_mutex *mutex, int *fork, int mode)
 {
-	while (1)
+	while (check_starvation(pl))
 	{
-		pthread_mutex_lock(pl->my_fork);
-		if (pl->pms[pl->my_id] == 1)
+		pthread_mutex_lock(mutex);
+		if (*fork == mode)
 		{
-			pthread_mutex_lock(pl->next_fork);
-			if (!print_doublemesage(pl, TAKE_FORK))
-				return (place2fork(pl->my_fork, pl->next_fork));
-			pl->pms[pl->my_id] = 0;
+			pthread_mutex_unlock(mutex);
+			if (!print_message(pl, TAKE_FORK))
+				return (0);
 			return (1);
 		}
-		pthread_mutex_unlock(pl->my_fork);
-		if (!check_starvation(pl))
-			return (0);
-		usleep(100);
+		pthread_mutex_unlock(mutex);
+		usleep(50);
 	}
 	return (0);
 }
 
 int	philo_eating(t_philo *pl)
 {
-	if (!print_mesage(pl, EATING))
-		return (place2fork(pl->my_fork, pl->next_fork));
+	if (!print_message(pl, EATING))
+		return (0);
 	pl->t_starve = pl->t_cur + pl->time->t_die;
 	while (get_elapse_time() - pl->t_cur < pl->time->t_eat)
 	{
 		if (!check_starvation(pl))
-			return (place2fork(pl->my_fork, pl->next_fork));
-		usleep(100);
+			return (0);
+		usleep(50);
 	}
-	pl->pms[pl->next_id] = 1;
-	place2fork(pl->my_fork, pl->next_fork);
+	pthread_mutex_lock(pl->mutex1);
+	pthread_mutex_lock(pl->mutex2);
+	*(pl->fork1) = 0;
+	*(pl->fork2) = 1;
+	pthread_mutex_unlock(pl->mutex1);
+	pthread_mutex_unlock(pl->mutex2);
 	if (pl->time->max_meal)
 	{
 		pl->meal += 1;
@@ -89,15 +98,15 @@ int	philo_eating(t_philo *pl)
 
 int	philo_sleeping(t_philo *pl)
 {
-	if (!print_mesage(pl, SLEEPING))
+	if (!print_message(pl, SLEEPING))
 		return (0);
 	while (get_elapse_time() - pl->t_cur < pl->time->t_slp)
 	{
 		if (!check_starvation(pl))
 			return (0);
-		usleep(100);
+		usleep(50);
 	}
-	if (!print_mesage(pl, THINGKING))
+	if (!print_message(pl, THINGKING))
 		return (0);
 	return (1);
 }

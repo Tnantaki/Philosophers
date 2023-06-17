@@ -42,24 +42,22 @@ pthread_mutex_t	*allocate_mutex(int size)
 	return (mutex);
 }
 
-int	*allocate_permission(int size)
+int	*allocate_fork(int size)
 {
 	int	i;
-	int	*permission;
+	int	*fork;
 
-	permission = malloc(sizeof(int) * size);
-	if (!permission)
+	fork = malloc(sizeof(int) * size);
+	if (!fork)
 		return (NULL);
 	i = 0;
 	while (i < size)
 	{
 		if (i % 2 == 0)
-			permission[i] = 1;
+			fork[i] = 1;
 		else
-			permission[i] = 0;
+			fork[i] = 0;
 		i++;
 	}
-	if (size % 2 != 0)
-		permission[size - 1] = 0;
-	return (permission);
+	return (fork);
 }

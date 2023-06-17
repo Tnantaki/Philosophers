@@ -4,11 +4,11 @@ NAME	= philo
 ### Compilation ###
 CC		= gcc
 RM		= rm -f
-CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=address -g
+CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=address -g
 
 ### Source Files ###
 SRCS	= philo.c check_args.c allocate_args.c init_args.c\
-			thread.c routine.c timing.c utils.c
+			thread.c routine.c utils.c
 
 ### Object Files ###
 OBJS	= $(SRCS:.c=.o)

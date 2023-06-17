@@ -37,6 +37,8 @@
 # define DIED		"\e[1;31m%lu ms %d died\e[0m\n"
 # define ERR		"\e[1;31m%s\e[0m\n"
 
+typedef pthread_mutex_t	t_mutex;
+
 typedef struct s_time
 {
 	long int	start;
@@ -48,60 +50,56 @@ typedef struct s_time
 
 typedef struct s_philo
 {
-	pthread_mutex_t	*my_fork;
-	pthread_mutex_t	*next_fork;
-	pthread_mutex_t	*lock;
-	t_time			*time;
-	long int		t_starve;
-	long int		t_cur;
-	int				*pms;
-	int				*live;
-	int				philo;
-	int				my_id;
-	int				next_id;
-	int				meal;
+	t_mutex		*mutex1;
+	t_mutex		*mutex2;
+	t_mutex		*lock;
+	t_time		*time;
+	long int	t_starve;
+	long int	t_cur;
+	int			*fork1;
+	int			*fork2;
+	int			*live;
+	int			philo;
+	int			meal;
 }	t_philo;
 
 typedef struct s_args
 {
-	t_time			time;
-	t_philo			*pl;
-	pthread_t		*th;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	*lock;
-	int				*pms;
-	int				live;
-	int				philo_nb;
+	t_time		time;
+	t_philo		*pl;
+	pthread_t	*th;
+	t_mutex		*mutex;
+	t_mutex		*lock;
+	int			*fork;
+	int			live;
+	int			philo_nb;
 }	t_args;
 
 //check_arguments
-void			check_args(int ac, char **av);
-void			get_input(t_args *args, int ac, char **av);
+int			check_args(int ac, char **av);
+int			get_input(t_args *args, int ac, char **av);
 //allocate_argments
-t_philo			*allocate_philo(int size);
-pthread_t		*allocate_thread(int size);
-pthread_mutex_t	*allocate_mutex(int size);
-int				*allocate_permission(int size);
+t_philo		*allocate_philo(int size);
+pthread_t	*allocate_thread(int size);
+t_mutex		*allocate_mutex(int size);
+int			*allocate_fork(int size);
 //init argument
-void			init_args(t_args *args);
+int			init_args(t_args *args);
 //thread
-void			create_thread(t_args *args);
-void			join_thread(t_args *args);
-void			destroy_mutex(t_args *args);
+int			create_thread(t_args *args);
+int			join_thread(t_args *args);
+void		destroy_mutex(t_args *args);
 //routine
-int				check_philo_live(t_philo *pl);
-int				check_starvation(t_philo *pl);
-int				philo_take_fork(t_philo *pl);
-int				philo_eating(t_philo *pl);
-int				philo_sleeping(t_philo *pl);
-//timing
-long int		get_elapse_time(void);
-int				print_mesage(t_philo *pl, char *str);
-int				print_doublemesage(t_philo *pl, char *str);
-int				place2fork(pthread_mutex_t *fork1, pthread_mutex_t *fork2);
+void		*routine(void *args);
+int			check_starvation(t_philo *pl);
+int			philo_take_fork(t_philo *pl, t_mutex *mutex, int *fork, int mode);
+int			philo_eating(t_philo *pl);
+int			philo_sleeping(t_philo *pl);
 //utils
-int				ft_atoi(const char *str);
-void			prterr(int errnum);
-void			free_exit(t_args *args, int code);
+int			ft_atoi(const char *str);
+long int	get_elapse_time(void);
+int			print_message(t_philo *pl, char *str);
+void		prterr(int errnum);
+void		free_args(t_args *args, int code);
 
 #endif

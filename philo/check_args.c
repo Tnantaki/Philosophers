@@ -30,45 +30,47 @@ static int	is_digit(char *str)
 	return (0);
 }
 
-void	check_args(int ac, char **av)
+int	check_args(int ac, char **av)
 {
 	if (ac != 5 && ac != 6)
-		prterr(0);
+		return (prterr(0), 0);
 	if (is_digit(av[1]) != 1)
-		prterr(1);
+		return (prterr(1), 0);
 	if (is_digit(av[2]) != 1)
-		prterr(2);
+		return (prterr(2), 0);
 	if (is_digit(av[3]) != 1)
-		prterr(3);
+		return (prterr(3), 0);
 	if (is_digit(av[4]) != 1)
-		prterr(4);
+		return (prterr(4), 0);
 	if (ac == 6)
 	{
 		if (is_digit(av[5]) != 1)
-			prterr(5);
+			return (prterr(5), 0);
 	}
+	return (1);
 }
 
-void	get_input(t_args *args, int ac, char **av)
+int	get_input(t_args *args, int ac, char **av)
 {
 	args->philo_nb = ft_atoi(av[1]);
-	args->time.t_die = ft_atoi(av[2]) * 1000;
-	args->time.t_eat = ft_atoi(av[3]) * 1000;
-	args->time.t_slp = ft_atoi(av[4]) * 1000;
+	args->time.t_die = (long int)ft_atoi(av[2]) * 1000;
+	args->time.t_eat = (long int)ft_atoi(av[3]) * 1000;
+	args->time.t_slp = (long int)ft_atoi(av[4]) * 1000;
 	if (args->philo_nb < 1)
-		prterr(6);
+		return (prterr(6), 0);
 	if (ac == 6)
 	{
 		args->time.max_meal = ft_atoi(av[5]);
 		if (args->time.max_meal < 1)
-			prterr(5);
+			return (prterr(5), 0);
 	}
 	else
 		args->time.max_meal = 0;
 	args->pl = NULL;
 	args->th = NULL;
-	args->forks = NULL;
+	args->mutex = NULL;
 	args->lock = NULL;
-	args->pms = NULL;
+	args->fork = NULL;
 	args->live = 1;
+	return (1);
 }
